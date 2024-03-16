@@ -1,0 +1,295 @@
+{
+	"info": {
+		"_postman_id": "1d9d09ff-50d0-443c-9ab0-c7982500df08",
+		"name": "GoRest-APIchaining",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6132826"
+	},
+	"item": [
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var random=Math.random().toString(36).substring(2)\r",
+							"\r",
+							"//var UserEmail=\"sail\"+random+\"@gmail\";\r",
+							"var UserName=\"sail\"+random;\r",
+							"\r",
+							"pm.environment.set(\"env_name\",UserName);\r",
+							"//pm.environment.set(\"env_email\",UserEmail);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code as to be 201\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"pm.test(\"Status code name as string Created\", () => {\r",
+							"    pm.response.to.have.status(\"Created\");\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"env_id\", jsonData.id);\r",
+							"pm.test(\"Gender is 'male'\", () => {\r",
+							"    pm.expect(jsonData.gender).to.eql('male');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"name\":\"{{env_name}}\", \r\n\"gender\":\"male\", \r\n\"email\":\"{{env_data_email}}\",\r\n\"status\":\"inactive\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{env_base_url}}/public/v2/users",
+					"host": [
+						"{{env_base_url}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code as to be 200\" ,()=>{\r",
+							"pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code name as string Ok\" ,()=>{\r",
+							"pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"//3)content type validation from header\r",
+							"pm.test(\"Content type header should be present in header\",()=>{\r",
+							"pm.response.to.have.header('Content-Type');\r",
+							"});\r",
+							"\r",
+							"//4)content ype validation from header\r",
+							"pm.test(\"Content type response should have be application/json; charset=utf-8\",()=>{\r",
+							"pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"const jsondata=JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Validating Json field Id,Name and Email\",()=>{\r",
+							"    pm.expect(jsondata.id).to.eql(pm.environment.get(\"env_id\"));\r",
+							"    pm.expect(jsondata.name).to.eql(pm.environment.get(\"env_name\"));\r",
+							"//    pm.expect(jsondata.email).to.eql(pm.environment.get(\"env_email\"));\r",
+							"});\r",
+							"\r",
+							"// Asserts the email field in the response matches the stored env_data_email value\r",
+							"pm.test(\"Assert email field in response matches stored 'env_data_email' value\", function() {\r",
+							"    var responseBody = pm.response.json();\r",
+							"    var responseEmail = responseBody.email;\r",
+							"    var csvDataEmail = pm.variables.get(\"env_data_email\");    \r",
+							"    pm.expect(responseEmail).to.eql(csvDataEmail);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{collect_url}}/public/v2/users/{{env_id}}",
+					"host": [
+						"{{collect_url}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{env_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var random=Math.random().toString(36).substring(2)\r",
+							"\r",
+							"var UserEmail=\"sail\"+random+\"@gmail\";\r",
+							"var UserName=\"sail\"+random;\r",
+							"\r",
+							"pm.environment.set(\"env_name\",UserName);\r",
+							"pm.environment.set(\"env_email\",UserEmail);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code as to be 200\" ,()=>{\r",
+							"pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code name as string Ok\" ,()=>{\r",
+							"pm.response.to.have.status(\"OK\");\r",
+							"});\r",
+							"\r",
+							"//3)content type validation from header\r",
+							"pm.test(\"Content type header should be present in header\",()=>{\r",
+							"pm.response.to.have.header('Content-Type');\r",
+							"});\r",
+							"\r",
+							"//4)content ype validation from header\r",
+							"pm.test(\"Content type response should have be application/json; charset=utf-8\",()=>{\r",
+							"pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"name\":\"{{env_name}}\", \r\n\"email\":\"{{env_email}}\",\r\n\"status\":\"active\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{collect_url}}/public/v2/users/{{env_id}}",
+					"host": [
+						"{{collect_url}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{env_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code as to be 204\" ,()=>{\r",
+							"pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status code name as string No Content\" ,()=>{\r",
+							"pm.response.to.have.status(\"No Content\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.environment.unset(\"env_id\");\r",
+							"pm.environment.unset(\"env_name\");\r",
+							"pm.environment.unset(\"env_email\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{collect_url}}/public/v2/users/{{env_id}}",
+					"host": [
+						"{{collect_url}}"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users",
+						"{{env_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "37eefa40fc7c87cd8f712f2127620e01f1322b020d354880f529650eeaff77fe",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "collect_url",
+			"value": "https://gorest.co.in",
+			"type": "string"
+		}
+	]
+}

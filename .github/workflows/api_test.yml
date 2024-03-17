@@ -17,5 +17,4 @@ jobs:
       - name: Run API Tests
         run: |
           newman run GoRest-APIchaining.postman_collection.json -e "New Environment.postman_environment.json" -d masterdata.csv --iteration-count=5 --reporters htmlextra
-      - name: Move HTML Report
-        run: mv newman-html-report/index.html newman-report.html
+          
